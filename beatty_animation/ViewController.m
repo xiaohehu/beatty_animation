@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "IPadFactsView.h"
 @interface ViewController ()
 
 @end
@@ -17,6 +17,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.view.backgroundColor = [UIColor grayColor];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    IPadFactsView *animationView = [[IPadFactsView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview: animationView];
+    [animationView performSelector:@selector(loadInAnimation) withObject:nil afterDelay:1.0];
 }
 
 - (void)didReceiveMemoryWarning {

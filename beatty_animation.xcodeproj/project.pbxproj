@@ -14,6 +14,7 @@
 		824B9C041B58274D006C58DF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 824B9C031B58274D006C58DF /* Images.xcassets */; };
 		824B9C071B58274D006C58DF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 824B9C051B58274D006C58DF /* LaunchScreen.xib */; };
 		824B9C131B58274D006C58DF /* beatty_animationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 824B9C121B58274D006C58DF /* beatty_animationTests.m */; };
+		824B9C1E1B582763006C58DF /* IPadFactsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 824B9C1D1B582763006C58DF /* IPadFactsView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,8 @@
 		824B9C0C1B58274D006C58DF /* beatty_animationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = beatty_animationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		824B9C111B58274D006C58DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		824B9C121B58274D006C58DF /* beatty_animationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = beatty_animationTests.m; sourceTree = "<group>"; };
+		824B9C1C1B582763006C58DF /* IPadFactsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPadFactsView.h; sourceTree = "<group>"; };
+		824B9C1D1B582763006C58DF /* IPadFactsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IPadFactsView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +89,8 @@
 				824B9BFD1B58274C006C58DF /* ViewController.h */,
 				824B9BFE1B58274C006C58DF /* ViewController.m */,
 				824B9C001B58274D006C58DF /* Main.storyboard */,
+				824B9C1C1B582763006C58DF /* IPadFactsView.h */,
+				824B9C1D1B582763006C58DF /* IPadFactsView.m */,
 				824B9C031B58274D006C58DF /* Images.xcassets */,
 				824B9C051B58274D006C58DF /* LaunchScreen.xib */,
 				824B9BF61B58274C006C58DF /* Supporting Files */,
@@ -219,6 +224,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				824B9C1E1B582763006C58DF /* IPadFactsView.m in Sources */,
 				824B9BFF1B58274C006C58DF /* ViewController.m in Sources */,
 				824B9BFC1B58274C006C58DF /* AppDelegate.m in Sources */,
 				824B9BF91B58274C006C58DF /* main.m in Sources */,
@@ -352,6 +358,7 @@
 				INFOPLIST_FILE = beatty_animation/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -362,6 +369,7 @@
 				INFOPLIST_FILE = beatty_animation/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
