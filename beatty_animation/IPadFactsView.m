@@ -88,7 +88,7 @@
     CAKeyframeAnimation *factGrid06SmOpacityAnimation = [CAKeyframeAnimation animationWithKeyPath:@"opacity"];
     factGrid06SmOpacityAnimation.duration = 1.0;
     factGrid06SmOpacityAnimation.values = @[@(0.000), @(0.000), @(1.000)];
-    factGrid06SmOpacityAnimation.keyTimes = @[@(0.000), @(0.050), @(0.100)];
+    factGrid06SmOpacityAnimation.keyTimes = @[@(0.000), @(0.050), @(0.200)];
     factGrid06SmOpacityAnimation.timingFunctions = @[linearTiming, easeOutTiming, linearTiming];
     factGrid06SmOpacityAnimation.beginTime = beginTime;
     factGrid06SmOpacityAnimation.fillMode = fillMode;

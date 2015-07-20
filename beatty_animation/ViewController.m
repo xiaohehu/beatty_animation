@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "IPadFactsView.h"
+#import "animationView.h"
 @interface ViewController ()
 
 @end
@@ -21,9 +22,12 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-    IPadFactsView *animationView = [[IPadFactsView alloc] initWithFrame:self.view.bounds];
-    [self.view addSubview: animationView];
-    [animationView performSelector:@selector(loadInAnimation) withObject:nil afterDelay:1.0];
+//    IPadFactsView *animation = [[IPadFactsView alloc] initWithFrame:self.view.bounds];
+//    [self.view addSubview: animation];
+//    [animation performSelector:@selector(loadInAnimation) withObject:nil afterDelay:1.0];
+    
+    animationView *animation = [[animationView alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview: animation];
 }
 
 - (void)didReceiveMemoryWarning {

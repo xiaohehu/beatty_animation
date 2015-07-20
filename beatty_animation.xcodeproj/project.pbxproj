@@ -15,6 +15,7 @@
 		824B9C071B58274D006C58DF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 824B9C051B58274D006C58DF /* LaunchScreen.xib */; };
 		824B9C131B58274D006C58DF /* beatty_animationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 824B9C121B58274D006C58DF /* beatty_animationTests.m */; };
 		824B9C1E1B582763006C58DF /* IPadFactsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 824B9C1D1B582763006C58DF /* IPadFactsView.m */; };
+		82B3234B1B5D2DD9000B0CAF /* animationView.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B3234A1B5D2DD9000B0CAF /* animationView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +44,8 @@
 		824B9C121B58274D006C58DF /* beatty_animationTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = beatty_animationTests.m; sourceTree = "<group>"; };
 		824B9C1C1B582763006C58DF /* IPadFactsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPadFactsView.h; sourceTree = "<group>"; };
 		824B9C1D1B582763006C58DF /* IPadFactsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IPadFactsView.m; sourceTree = "<group>"; };
+		82B323491B5D2DD9000B0CAF /* animationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = animationView.h; sourceTree = "<group>"; };
+		82B3234A1B5D2DD9000B0CAF /* animationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = animationView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,6 +92,8 @@
 				824B9BFD1B58274C006C58DF /* ViewController.h */,
 				824B9BFE1B58274C006C58DF /* ViewController.m */,
 				824B9C001B58274D006C58DF /* Main.storyboard */,
+				82B323491B5D2DD9000B0CAF /* animationView.h */,
+				82B3234A1B5D2DD9000B0CAF /* animationView.m */,
 				824B9C1C1B582763006C58DF /* IPadFactsView.h */,
 				824B9C1D1B582763006C58DF /* IPadFactsView.m */,
 				824B9C031B58274D006C58DF /* Images.xcassets */,
@@ -227,6 +232,7 @@
 				824B9C1E1B582763006C58DF /* IPadFactsView.m in Sources */,
 				824B9BFF1B58274C006C58DF /* ViewController.m in Sources */,
 				824B9BFC1B58274C006C58DF /* AppDelegate.m in Sources */,
+				82B3234B1B5D2DD9000B0CAF /* animationView.m in Sources */,
 				824B9BF91B58274C006C58DF /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -426,6 +432,7 @@
 				824B9C181B58274D006C58DF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		824B9C191B58274D006C58DF /* Build configuration list for PBXNativeTarget "beatty_animationTests" */ = {
 			isa = XCConfigurationList;
@@ -434,6 +441,7 @@
 				824B9C1B1B58274D006C58DF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

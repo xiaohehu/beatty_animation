@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>FE016B4C-C555-44A2-9F23-A6EEFD5513D6</string>
+	<key>IDESourceControlProjectName</key>
+	<string>project</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>098DCE884ED87C7C4B19A471BD2498BBE9BA1CA0</key>
+		<string>https://github.com/xiaohehu/beatty_animation.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>beatty_animation.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>098DCE884ED87C7C4B19A471BD2498BBE9BA1CA0</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/xiaohehu/beatty_animation.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>098DCE884ED87C7C4B19A471BD2498BBE9BA1CA0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>098DCE884ED87C7C4B19A471BD2498BBE9BA1CA0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>beatty_animation</string>
+		</dict>
+	</array>
+</dict>
+</plist>
