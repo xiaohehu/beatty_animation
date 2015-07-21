@@ -34,6 +34,7 @@ static float    largeGridSize = 360.0;
     NSArray         *arr_indicator;
     NSArray         *arr_smallImages;
     NSArray         *arr_largeImages;
+    NSMutableArray  *arr_checkedIndex;
 }
 
 @end
@@ -240,6 +241,22 @@ static float    largeGridSize = 360.0;
     }
 }
 
+#pragma mark - Logic programming tool
+- (void)checkIndex:(int)index {
+    
+    if (arr_checkedIndex == nil) {
+        arr_checkedIndex = [[NSMutableArray alloc] init];
+    }
+    
+    NSNumber *indexNum = [NSNumber numberWithInt:index];
+    for (NSNumber *index in arr_checkedIndex) {
+        if (indexNum == index) {
+            return;
+        }
+    }
+    [arr_checkedIndex addObject: indexNum];
+}
+
 #pragma mark - Button action / UIGesture action
 
 #pragma mark Reset all grids
@@ -290,6 +307,12 @@ static float    largeGridSize = 360.0;
         [currentView setImage:[UIImage imageNamed:arr_smallImages[currentIndex]]];
         for (UIImageView *grid in arr_grids) {
             grid.alpha = 1.0;
+            NSNumber *tagNum = [NSNumber numberWithInt:grid.tag];
+            for (NSNumber *index in arr_checkedIndex) {
+                if (tagNum == index) {
+                    grid.alpha = 0.7;
+                }
+            }
         }
         
         uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
@@ -311,6 +334,8 @@ static float    largeGridSize = 360.0;
         }
         [UIView animateWithDuration:0.33 animations:^(void){
             uib_arrow.frame = CGRectMake(expandButtonX, expandButtonY, expandButtonSize, expandButtonSize);
+        } completion:^(BOOL finished){
+            uib_arrow.hidden = YES;
         }];
     }];
 }
@@ -344,6 +369,8 @@ static float    largeGridSize = 360.0;
     
     currentIndex = (int)[gesture.view tag];
     
+    [self checkIndex:currentIndex];
+    
     [self updateIndicatorColor];
     
     float expandButtonSize = 40;
@@ -357,6 +384,7 @@ static float    largeGridSize = 360.0;
         for (UIImageView *grid in arr_grids) {
             if ([grid isEqual: gesture.view]) {
                 [grid setImage:[UIImage imageNamed:arr_largeImages[currentIndex]]];
+                grid.alpha = 1.0;
                 continue;
             } else {
                 grid.alpha = 0.0;
@@ -459,6 +487,7 @@ static float    largeGridSize = 360.0;
         currView.transform = CGAffineTransformIdentity;
         currView.alpha = 0.0;
         currentIndex = nextIndex;
+        [self checkIndex:currentIndex];
         [self updateIndicatorColor];
     }];
 }
