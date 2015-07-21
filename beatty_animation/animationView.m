@@ -101,16 +101,20 @@ static float    largeGridSize = 360.0;
 }
 
 - (void)setupHierarchy {
+
     uiv_gridContainer = [[UIView alloc] initWithFrame:CGRectMake(22, 204, largeGridSize, largeGridSize)];
     uiv_gridContainer.backgroundColor = [UIColor greenColor];
     uiv_gridContainer.clipsToBounds = YES;
     [self addSubview: uiv_gridContainer];
-    
+    // Grid top space against container
     float gridTopGap = 2.0;
+    // Grid size 117, space between 2 gird is 3
     float gridAndGap = 120;
     
     for (UIView *grid in arr_grids) {
+        // Column position
         int x_position = (int)grid.tag%3;
+        // Row position
         int y_position = (int)grid.tag/3;
         grid.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
         grid.backgroundColor = [UIColor colorWithRed:30.0*grid.tag/255.0 green:18.0*grid.tag/255.0 blue:20.0*grid.tag/255.0 alpha:1.0];
@@ -136,6 +140,10 @@ static float    largeGridSize = 360.0;
 }
 
 - (void)createIndicatorView {
+    /*
+     * Indicator view is hidden by default
+     * When a grid is expanded, indicator will show up
+     */
     uiv_indicator = [[UIView alloc] initWithFrame:CGRectMake(331, 16, 17, 17)];
     uiv_indicator.backgroundColor = [UIColor whiteColor];
     [uiv_gridContainer addSubview: uiv_indicator];
@@ -166,11 +174,19 @@ static float    largeGridSize = 360.0;
     for (int i = 0; i < arr_indicator.count; i++) {
         [arr_indicator[i] setTag:i];
     }
+    /*
+     * Small grid's size is 5.0
+     * Space between grids is 1.0;
+     */
+    float smallGridAndSpace = 6.0;
+    float smallGridSize = 5.0;
     
     for (UIView *indicator in arr_indicator) {
+        // Column position
         int x_position = (int)indicator.tag%3;
+        // Row position
         int y_position = (int)indicator.tag/3;
-        indicator.frame = CGRectMake(x_position * 6, y_position * 6, 5, 5);
+        indicator.frame = CGRectMake(x_position * smallGridAndSpace, y_position * smallGridAndSpace, smallGridSize, smallGridSize);
         indicator.backgroundColor = uic_normal;
         [uiv_indicator addSubview: indicator];
     }
@@ -180,11 +196,31 @@ static float    largeGridSize = 360.0;
     [uiv_indicator addGestureRecognizer: tapOnIndicator];
 }
 
+#pragma mark - Initial Animation
+- (void)loadInAnimaiton {
+    for (UIView *grid in arr_grids) {
+        int x_position = (int)grid.tag%3;
+        int y_position = (int)grid.tag/3;
+        float animation_time = 0.6-0.1*x_position-0.1*y_position;
+        [UIView animateWithDuration:animation_time delay:animation_time/2 options:0 animations:^(void){
+            grid.alpha = 1.0;
+        } completion:^(BOOL finished){
+            UITapGestureRecognizer *tapOnGrid = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(expandGrid:)];
+            grid.userInteractionEnabled = YES;
+            [grid addGestureRecognizer: tapOnGrid];
+        }];
+    }
+}
+
+#pragma mark - Button action / UIGesture action
+
+#pragma mark Reset all grids
 - (void)resetWholeGrids:(UIGestureRecognizer *)gesture {
-    
+    // Reset indicator's color and hide
     [self resetIndicatorColor];
     uiv_indicator.hidden = YES;
     
+    // If detail text is on, close it first
     if (expanded) {
         [self tapArrowButtonClose:nil];
         [self performSelector:@selector(resetToGrids) withObject:nil afterDelay:0.5];
@@ -202,6 +238,9 @@ static float    largeGridSize = 360.0;
     float expandButtonX = 342;
     float expandButtonY = 364;
     
+    /*
+     * Reset all grids on back to original position
+     */
     for (UIView *grid in arr_grids) {
         if (grid.tag != currentIndex) {
             int x_position = (int)grid.tag%3;
@@ -209,7 +248,11 @@ static float    largeGridSize = 360.0;
             grid.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
         }
     }
-    
+    /*
+     * Animate current big grid back to original position
+     * Set all the rest grids alpha value as 1.0
+     * Move arrow button
+     */
     UIView *currentView = arr_grids[currentIndex];
     [UIView animateWithDuration:0.5 animations:^(void){
         int x_position = (int)currentView.tag%3;
@@ -222,6 +265,11 @@ static float    largeGridSize = 360.0;
         uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
         
     } completion:^(BOOL finished){
+        /*
+         * Move arrow button layer under girds' contaier
+         * Remove siwpe getsture from grids and add tap gesture to them
+         * Move arrow button's position to original
+         */
         [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
         for (UIView *grid in arr_grids) {
             for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
@@ -236,7 +284,9 @@ static float    largeGridSize = 360.0;
         }];
     }];
 }
-
+/*
+ * Reset indicators color to gray
+ */
 - (void)resetIndicatorColor {
     for (UIView *grid in arr_indicator) {
         grid.backgroundColor = [UIColor colorWithRed:155.0/255.0 green:155.0/255.0 blue:155.0/255.0 alpha:1.0];
@@ -255,33 +305,22 @@ static float    largeGridSize = 360.0;
         }
     }
 }
-
-- (void)loadInAnimaiton {
-    for (UIView *grid in arr_grids) {
-        int x_position = (int)grid.tag%3;
-        int y_position = (int)grid.tag/3;
-        float animation_time = 0.6-0.1*x_position-0.1*y_position;
-        [UIView animateWithDuration:animation_time delay:animation_time/2 options:0 animations:^(void){
-            grid.alpha = 1.0;
-        } completion:^(BOOL finished){
-            UITapGestureRecognizer *tapOnGrid = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(expandGrid:)];
-            grid.userInteractionEnabled = YES;
-            [grid addGestureRecognizer: tapOnGrid];
-        }];
-    }
-}
-
+#pragma mark Tap Small Grid to expand
 - (void)expandGrid:(UIGestureRecognizer *)gesture {
     
     uiv_indicator.hidden = NO;
     
-    [arr_indicator[[gesture.view tag]] setBackgroundColor:[UIColor colorWithRed:216.0/255.0 green:35.0/255.0 blue:42.0/255.0 alpha:1.0]];
-    
     currentIndex = (int)[gesture.view tag];
+    
+    [self updateIndicatorColor];
+    
+    float expandButtonSize = 40;
+    float expandButtonX = 342;
+    float expandButtonY = 364;
     
     [UIView animateWithDuration:0.5 animations:^(void){
         [gesture view].frame = uiv_gridContainer.bounds;
-        uib_arrow.frame = CGRectMake(402, 364, 40, 40);
+        uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
         
         for (UIView *grid in arr_grids) {
             if ([grid isEqual: gesture.view]) {
@@ -294,9 +333,11 @@ static float    largeGridSize = 360.0;
     } completion:^(BOOL finished){
         [self bringSubviewToFront:uib_arrow];
         [UIView animateWithDuration:0.3 animations:^(void){
-            uib_arrow.frame = CGRectMake(362, 364, 40, 40);
+            uib_arrow.frame = CGRectMake(expandButtonX + 20, expandButtonY, expandButtonSize, expandButtonSize);
         }];
-        
+        /*
+         * Updated gesture of grid (From tap to swipe)
+         */
         for (UIView *grid in arr_grids) {
             for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
                 [grid removeGestureRecognizer: gesture];
@@ -313,41 +354,71 @@ static float    largeGridSize = 360.0;
     }];
 }
 
+#pragma mark Swipe on big grid to load next/previous one
 - (void)swipeLeftGrib:(UIGestureRecognizer *)gesture {
-//    NSLog(@"\n\n Swipe to left\n\n");
+    /*
+     * If detail text view is expanded, close it first then load next gird
+     */
     if (expanded) {
         [self tapArrowButtonClose:nil];
-        [self performSelector:@selector(loadNextGrid) withObject:nil afterDelay:0.5];
+        [self performSelector:@selector(loadGrid:) withObject:[NSNumber numberWithInt:1] afterDelay:0.5];
         return;
     } else {
-        [self loadNextGrid];
+        [self loadGrid:[NSNumber numberWithInt:1] ];
     }
 }
 
 - (void)swipeRightGrib:(UIGestureRecognizer *)gesture {
-//    NSLog(@"\n\n Swipe to right \n\n");
+    /*
+     * If detail text view is expanded, close it first then load previous gird
+     */
     if (expanded) {
         [self tapArrowButtonClose:nil];
-        [self performSelector:@selector(loadPreGrid) withObject:nil afterDelay:0.5];
+        [self performSelector:@selector(loadGrid:) withObject:[NSNumber numberWithInt:-1] afterDelay:0.5];
         return;
     } else {
-        [self loadPreGrid];
+        [self loadGrid:[NSNumber numberWithInt:-1]];
     }
 }
 
-- (void)loadNextGrid {
+/*
+ * If direction is > 0, load next
+ * If direction is < 0, load previous
+ */
+- (void)loadGrid:(NSNumber *)direc {
+    /*
+     * Check direction
+     * And set next grid's index
+     */
+    int direction = [direc intValue];
     int nextIndex = 0;
-    if (currentIndex != 8) {
-        nextIndex = currentIndex + 1;
+    
+    if (direction == 0) {
+        return;
+    } else if (direction > 0) {
+        direction = 1;
+        nextIndex = 0;
+        if (currentIndex != 8) {
+            nextIndex = currentIndex + 1;
+        }
+    } else {
+        direction = -1;
+        nextIndex = 8;
+        if (currentIndex != 0) {
+            nextIndex = currentIndex - 1;
+        }
     }
+    /*
+     * According to direction move next grid to current one's left/right
+     */
     UIView *nextView = arr_grids[nextIndex];
     UIView *currView = arr_grids[currentIndex];
     nextView.frame = uiv_gridContainer.bounds;
-    nextView.transform = CGAffineTransformMakeTranslation(largeGridSize, 0);
+    nextView.transform = CGAffineTransformMakeTranslation(largeGridSize * direction, 0.0);
     nextView.alpha = 1.0;
     [UIView animateWithDuration:0.33 animations:^(void){
         nextView.transform = CGAffineTransformIdentity;
-        currView.transform = CGAffineTransformMakeTranslation(-largeGridSize, 0.0);
+        currView.transform = CGAffineTransformMakeTranslation(largeGridSize * -direction, 0.0);
     } completion:^(BOOL finished){
         currView.transform = CGAffineTransformIdentity;
         currView.alpha = 0.0;
@@ -356,28 +427,7 @@ static float    largeGridSize = 360.0;
     }];
 }
 
-- (void)loadPreGrid {
-    int preIndex = 8;
-    if (currentIndex != 0) {
-        preIndex = currentIndex - 1;
-    }
-    UIView *preView = arr_grids[preIndex];
-    UIView *currView = arr_grids[currentIndex];
-    preView.frame = uiv_gridContainer.bounds;
-    preView.transform = CGAffineTransformMakeTranslation(-largeGridSize, 0);
-    preView.alpha = 1.0;
-    [UIView animateWithDuration:0.33 animations:^(void){
-        preView.transform = CGAffineTransformIdentity;
-        currView.transform = CGAffineTransformMakeTranslation(largeGridSize, 0.0);
-    } completion:^(BOOL finished){
-        currView.transform = CGAffineTransformIdentity;
-        currView.alpha = 0.0;
-        currentIndex = preIndex;
-        [self updateIndicatorColor];
-    }];
-}
-
-
+#pragma mark Tap on arrow button to expand/hide detail view
 - (void)tapArrowButtonOpen:(id)sender {
     
     expanded = YES;
