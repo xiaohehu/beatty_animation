@@ -139,6 +139,7 @@ static float    largeGridSize = 360.0;
     uiv_indicator = [[UIView alloc] initWithFrame:CGRectMake(331, 16, 17, 17)];
     uiv_indicator.backgroundColor = [UIColor whiteColor];
     [uiv_gridContainer addSubview: uiv_indicator];
+    uiv_indicator.hidden = YES;
     
     UIColor *uic_normal = [UIColor colorWithRed:155.0/255.0 green:155.0/255.0 blue:155.0/255.0 alpha:1.0];
     
@@ -173,10 +174,73 @@ static float    largeGridSize = 360.0;
         indicator.backgroundColor = uic_normal;
         [uiv_indicator addSubview: indicator];
     }
+    
+    UITapGestureRecognizer *tapOnIndicator = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resetWholeGrids:)];
+    uiv_indicator.userInteractionEnabled = YES;
+    [uiv_indicator addGestureRecognizer: tapOnIndicator];
+}
+
+- (void)resetWholeGrids:(UIGestureRecognizer *)gesture {
+    
+    [self resetIndicatorColor];
+    uiv_indicator.hidden = YES;
+    
+    if (expanded) {
+        [self tapArrowButtonClose:nil];
+        [self performSelector:@selector(resetToGrids) withObject:nil afterDelay:0.5];
+    } else {
+        [self resetToGrids];
+    }
+}
+
+- (void)resetToGrids {
+    
+    float gridTopGap = 2.0;
+    float gridAndGap = 120;
+    
+    float expandButtonSize = 40;
+    float expandButtonX = 342;
+    float expandButtonY = 364;
+    
+    for (UIView *grid in arr_grids) {
+        if (grid.tag != currentIndex) {
+            int x_position = (int)grid.tag%3;
+            int y_position = (int)grid.tag/3;
+            grid.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
+        }
+    }
+    
+    UIView *currentView = arr_grids[currentIndex];
+    [UIView animateWithDuration:0.5 animations:^(void){
+        int x_position = (int)currentView.tag%3;
+        int y_position = (int)currentView.tag/3;
+        currentView.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
+        for (UIView *grid in arr_grids) {
+            grid.alpha = 1.0;
+        }
+        
+        uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
+        
+    } completion:^(BOOL finished){
+        [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
+        for (UIView *grid in arr_grids) {
+            for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
+                [grid removeGestureRecognizer: gesture];
+            }
+            UITapGestureRecognizer *tapOnGrid = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(expandGrid:)];
+            grid.userInteractionEnabled = YES;
+            [grid addGestureRecognizer: tapOnGrid];
+        }
+        [UIView animateWithDuration:0.33 animations:^(void){
+            uib_arrow.frame = CGRectMake(expandButtonX, expandButtonY, expandButtonSize, expandButtonSize);
+        }];
+    }];
 }
 
 - (void)resetIndicatorColor {
-
+    for (UIView *grid in arr_indicator) {
+        grid.backgroundColor = [UIColor colorWithRed:155.0/255.0 green:155.0/255.0 blue:155.0/255.0 alpha:1.0];
+    }
 }
 
 - (void)updateIndicatorColor {
@@ -209,6 +273,8 @@ static float    largeGridSize = 360.0;
 
 - (void)expandGrid:(UIGestureRecognizer *)gesture {
     
+    uiv_indicator.hidden = NO;
+    
     [arr_indicator[[gesture.view tag]] setBackgroundColor:[UIColor colorWithRed:216.0/255.0 green:35.0/255.0 blue:42.0/255.0 alpha:1.0]];
     
     currentIndex = (int)[gesture.view tag];
@@ -231,18 +297,18 @@ static float    largeGridSize = 360.0;
             uib_arrow.frame = CGRectMake(362, 364, 40, 40);
         }];
         
-        for (UIView *grib in arr_grids) {
-            for (UIGestureRecognizer *gesture in grib.gestureRecognizers) {
-                [grib removeGestureRecognizer: gesture];
+        for (UIView *grid in arr_grids) {
+            for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
+                [grid removeGestureRecognizer: gesture];
             }
             
             UISwipeGestureRecognizer *swipeLeftOnGrib = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeftGrib:)];
             swipeLeftOnGrib.direction = UISwipeGestureRecognizerDirectionLeft;
-            [grib addGestureRecognizer: swipeLeftOnGrib];
+            [grid addGestureRecognizer: swipeLeftOnGrib];
             
             UISwipeGestureRecognizer *swipeRightOnGrib = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRightGrib:)];
             swipeRightOnGrib.direction = UISwipeGestureRecognizerDirectionRight;
-            [grib addGestureRecognizer: swipeRightOnGrib];
+            [grid addGestureRecognizer: swipeRightOnGrib];
         }
     }];
 }
