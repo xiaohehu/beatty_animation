@@ -18,20 +18,22 @@ static float    largeGridSize = 360.0;
     int             currentIndex;
     
     UIView          *uiv_gridContainer;
-    UIView          *uiv_grid0;
-    UIView          *uiv_grid1;
-    UIView          *uiv_grid2;
-    UIView          *uiv_grid3;
-    UIView          *uiv_grid4;
-    UIView          *uiv_grid5;
-    UIView          *uiv_grid6;
-    UIView          *uiv_grid7;
-    UIView          *uiv_grid8;
+    UIImageView     *uiiv_grid0;
+    UIImageView     *uiiv_grid1;
+    UIImageView     *uiiv_grid2;
+    UIImageView     *uiiv_grid3;
+    UIImageView     *uiiv_grid4;
+    UIImageView     *uiiv_grid5;
+    UIImageView     *uiiv_grid6;
+    UIImageView     *uiiv_grid7;
+    UIImageView     *uiiv_grid8;
     UIView          *uiv_textContent;
     UIView          *uiv_indicator;
     UIButton        *uib_arrow;
     NSArray         *arr_grids;
     NSArray         *arr_indicator;
+    NSArray         *arr_smallImages;
+    NSArray         *arr_largeImages;
 }
 
 @end
@@ -73,37 +75,59 @@ static float    largeGridSize = 360.0;
 #pragma mark - Init all UI elements
 - (void)createGridArray {
     // Init all grid views
-    uiv_grid0 = [UIView new];
-    uiv_grid1 = [UIView new];
-    uiv_grid2 = [UIView new];
-    uiv_grid3 = [UIView new];
-    uiv_grid4 = [UIView new];
-    uiv_grid5 = [UIView new];
-    uiv_grid6 = [UIView new];
-    uiv_grid7 = [UIView new];
-    uiv_grid8 = [UIView new];
+    uiiv_grid0 = [UIImageView new];
+    uiiv_grid1 = [UIImageView new];
+    uiiv_grid2 = [UIImageView new];
+    uiiv_grid3 = [UIImageView new];
+    uiiv_grid4 = [UIImageView new];
+    uiiv_grid5 = [UIImageView new];
+    uiiv_grid6 = [UIImageView new];
+    uiiv_grid7 = [UIImageView new];
+    uiiv_grid8 = [UIImageView new];
     
     // Add grid views to array
-    arr_grids = @[uiv_grid0,
-                  uiv_grid1,
-                  uiv_grid2,
-                  uiv_grid3,
-                  uiv_grid4,
-                  uiv_grid5,
-                  uiv_grid6,
-                  uiv_grid7,
-                  uiv_grid8];
+    arr_grids = @[uiiv_grid0,
+                  uiiv_grid1,
+                  uiiv_grid2,
+                  uiiv_grid3,
+                  uiiv_grid4,
+                  uiiv_grid5,
+                  uiiv_grid6,
+                  uiiv_grid7,
+                  uiiv_grid8];
+    
+    arr_smallImages = @[@"fact-grid-01-sm.png",
+                        @"fact-grid-02-sm.png",
+                        @"fact-grid-03-sm.png",
+                        @"fact-grid-04-sm.png",
+                        @"fact-grid-05-sm.png",
+                        @"fact-grid-06-sm.png",
+                        @"fact-grid-07-sm.png",
+                        @"fact-grid-08-sm.png",
+                        @"fact-grid-09-sm.png"];
+    
+    arr_largeImages = @[@"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png",
+                        @"fact-grid-01-lg.png"];
     
     // Set tag to grid views
     for (int i = 0; i < arr_grids.count; i++) {
         [arr_grids[i] setTag: i];
+        UIImageView *grid = arr_grids[i];
+        [grid setImage:[UIImage imageNamed:arr_smallImages[i]]];
     }
 }
 
 - (void)setupHierarchy {
 
     uiv_gridContainer = [[UIView alloc] initWithFrame:CGRectMake(22, 204, largeGridSize, largeGridSize)];
-    uiv_gridContainer.backgroundColor = [UIColor greenColor];
+    uiv_gridContainer.backgroundColor = [UIColor clearColor];
     uiv_gridContainer.clipsToBounds = YES;
     [self addSubview: uiv_gridContainer];
     // Grid top space against container
@@ -111,7 +135,7 @@ static float    largeGridSize = 360.0;
     // Grid size 117, space between 2 gird is 3
     float gridAndGap = 120;
     
-    for (UIView *grid in arr_grids) {
+    for (UIImageView *grid in arr_grids) {
         // Column position
         int x_position = (int)grid.tag%3;
         // Row position
@@ -127,13 +151,17 @@ static float    largeGridSize = 360.0;
     float expandButtonY = 364;
     uib_arrow = [UIButton buttonWithType:UIButtonTypeCustom];
     uib_arrow.frame = CGRectMake(expandButtonX, expandButtonY, expandButtonSize, expandButtonSize);
-    uib_arrow.backgroundColor = [UIColor blueColor];
+    uib_arrow.backgroundColor = [UIColor clearColor];
+    [uib_arrow setImage:[UIImage imageNamed:@"grfx-arrow-right.png"] forState:UIControlStateNormal];
     [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
+    uib_arrow.hidden = YES;
     [uib_arrow addTarget:self action:@selector(tapArrowButtonOpen:) forControlEvents:UIControlEventTouchUpInside];
     
     uiv_textContent = [[UIView alloc] initWithFrame:CGRectMake(380, 100, 271, 167)];
-    uiv_textContent.backgroundColor = [UIColor blackColor];
+    uiv_textContent.backgroundColor = [UIColor clearColor];
     uiv_textContent.alpha = 0.8;
+    UIImageView *textImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"fact-copy-01.png"]];;
+    [uiv_textContent addSubview: textImage];
     [uiv_gridContainer addSubview: uiv_textContent];
     
     [self createIndicatorView];
@@ -198,7 +226,7 @@ static float    largeGridSize = 360.0;
 
 #pragma mark - Initial Animation
 - (void)loadInAnimaiton {
-    for (UIView *grid in arr_grids) {
+    for (UIImageView *grid in arr_grids) {
         int x_position = (int)grid.tag%3;
         int y_position = (int)grid.tag/3;
         float animation_time = 0.6-0.1*x_position-0.1*y_position;
@@ -241,11 +269,12 @@ static float    largeGridSize = 360.0;
     /*
      * Reset all grids on back to original position
      */
-    for (UIView *grid in arr_grids) {
+    for (UIImageView *grid in arr_grids) {
         if (grid.tag != currentIndex) {
             int x_position = (int)grid.tag%3;
             int y_position = (int)grid.tag/3;
             grid.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
+            [grid setImage:[UIImage imageNamed:arr_smallImages[grid.tag]]];
         }
     }
     /*
@@ -253,12 +282,13 @@ static float    largeGridSize = 360.0;
      * Set all the rest grids alpha value as 1.0
      * Move arrow button
      */
-    UIView *currentView = arr_grids[currentIndex];
+    UIImageView *currentView = arr_grids[currentIndex];
     [UIView animateWithDuration:0.5 animations:^(void){
         int x_position = (int)currentView.tag%3;
         int y_position = (int)currentView.tag/3;
         currentView.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
-        for (UIView *grid in arr_grids) {
+        [currentView setImage:[UIImage imageNamed:arr_smallImages[currentIndex]]];
+        for (UIImageView *grid in arr_grids) {
             grid.alpha = 1.0;
         }
         
@@ -271,7 +301,7 @@ static float    largeGridSize = 360.0;
          * Move arrow button's position to original
          */
         [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
-        for (UIView *grid in arr_grids) {
+        for (UIImageView *grid in arr_grids) {
             for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
                 [grid removeGestureRecognizer: gesture];
             }
@@ -308,6 +338,8 @@ static float    largeGridSize = 360.0;
 #pragma mark Tap Small Grid to expand
 - (void)expandGrid:(UIGestureRecognizer *)gesture {
     
+    uib_arrow.hidden = NO;
+    
     uiv_indicator.hidden = NO;
     
     currentIndex = (int)[gesture.view tag];
@@ -322,8 +354,9 @@ static float    largeGridSize = 360.0;
         [gesture view].frame = uiv_gridContainer.bounds;
         uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
         
-        for (UIView *grid in arr_grids) {
+        for (UIImageView *grid in arr_grids) {
             if ([grid isEqual: gesture.view]) {
+                [grid setImage:[UIImage imageNamed:arr_largeImages[currentIndex]]];
                 continue;
             } else {
                 grid.alpha = 0.0;
@@ -338,7 +371,10 @@ static float    largeGridSize = 360.0;
         /*
          * Updated gesture of grid (From tap to swipe)
          */
-        for (UIView *grid in arr_grids) {
+        for (UIImageView *grid in arr_grids) {
+            
+            [grid setImage:[UIImage imageNamed:arr_largeImages[currentIndex]]];
+            
             for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
                 [grid removeGestureRecognizer: gesture];
             }
@@ -411,8 +447,8 @@ static float    largeGridSize = 360.0;
     /*
      * According to direction move next grid to current one's left/right
      */
-    UIView *nextView = arr_grids[nextIndex];
-    UIView *currView = arr_grids[currentIndex];
+    UIImageView *nextView = arr_grids[nextIndex];
+    UIImageView *currView = arr_grids[currentIndex];
     nextView.frame = uiv_gridContainer.bounds;
     nextView.transform = CGAffineTransformMakeTranslation(largeGridSize * direction, 0.0);
     nextView.alpha = 1.0;
@@ -430,17 +466,19 @@ static float    largeGridSize = 360.0;
 #pragma mark Tap on arrow button to expand/hide detail view
 - (void)tapArrowButtonOpen:(id)sender {
     
+    uiv_gridContainer.backgroundColor = [UIColor whiteColor];
     expanded = YES;
+    float moveDistance = 250.0;
     
-    CGAffineTransform move = CGAffineTransformMakeTranslation(250, 0.0);
-    CGAffineTransform rotation = CGAffineTransformRotate(move, M_PI_4);
+    CGAffineTransform move = CGAffineTransformMakeTranslation(moveDistance, 0.0);
+    CGAffineTransform rotation = CGAffineTransformRotate(move, M_PI);
     
     [UIView animateWithDuration:0.5 animations:^(void){
         uiv_gridContainer.frame = CGRectMake(uiv_gridContainer.frame.origin.x, uiv_gridContainer.frame.origin.y, 610, uiv_gridContainer.frame.size.height);
         uib_arrow.transform = rotation;
         uiv_textContent.alpha = 1.0;
-        uiv_textContent.transform = CGAffineTransformMakeTranslation(-42, 0.0);
-        uiv_indicator.transform = CGAffineTransformMakeTranslation(250.0, 0.0);
+        uiv_textContent.transform = CGAffineTransformMakeTranslation(-70, 0.0);
+        uiv_indicator.transform = CGAffineTransformMakeTranslation(moveDistance, 0.0);
     } completion:^(BOOL finished){
         [uib_arrow removeTarget:self action:@selector(tapArrowButtonOpen:) forControlEvents:UIControlEventAllEvents];
         [uib_arrow addTarget:self action:@selector(tapArrowButtonClose:) forControlEvents:UIControlEventTouchUpInside];
@@ -458,6 +496,7 @@ static float    largeGridSize = 360.0;
         uiv_textContent.transform = CGAffineTransformIdentity;
         uiv_indicator.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished){
+        uiv_gridContainer.backgroundColor = [UIColor clearColor];
         [uib_arrow removeTarget:self action:@selector(tapArrowButtonClose:) forControlEvents:UIControlEventAllEvents];
         [uib_arrow addTarget:self action:@selector(tapArrowButtonOpen:) forControlEvents:UIControlEventTouchUpInside];
     }];

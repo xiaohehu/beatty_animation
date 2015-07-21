@@ -15,10 +15,16 @@
 
 @implementation ViewController
 
+- (BOOL)prefersStatusBarHidden {
+    return YES;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.view.backgroundColor = [UIColor grayColor];
+//    self.view.backgroundColor = [UIColor grayColor];
+    UIImageView *uiiv_bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg.jpg"]];
+    [self.view addSubview: uiiv_bg];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
