@@ -17,7 +17,7 @@ static float    largeGridSize = 360.0;
     int             currentIndex;
     UIView          *uiv_gridContainer;
     UIView          *uiv_textContent;
-    UIView          *uiv_indicator;
+    UIView          *uiv_indicatorContainer;
     UIButton        *uib_arrow;
     NSMutableArray  *arr_grids;
     NSMutableArray  *arr_indicator;
@@ -130,10 +130,13 @@ static float    largeGridSize = 360.0;
      * Indicator view is hidden by default
      * When a grid is expanded, indicator will show up
      */
-    uiv_indicator = [[UIView alloc] initWithFrame:CGRectMake(331, 16, 17, 17)];
-    uiv_indicator.backgroundColor = [UIColor whiteColor];
-    [uiv_gridContainer addSubview: uiv_indicator];
-    uiv_indicator.hidden = YES;
+    uiv_indicatorContainer = [[UIView alloc] initWithFrame:CGRectMake(326, 5, 30, 30)];
+    uiv_indicatorContainer.backgroundColor = [UIColor whiteColor];
+    UIView *uiv_indicator = [[UIView alloc] initWithFrame:CGRectMake(6, 6, 17, 17)];
+    [uiv_indicatorContainer addSubview: uiv_indicator];
+    
+    [uiv_gridContainer addSubview: uiv_indicatorContainer];
+    uiv_indicatorContainer.hidden = YES;
     
     UIColor *uic_normal = [UIColor colorWithRed:155.0/255.0 green:155.0/255.0 blue:155.0/255.0 alpha:1.0];
     
@@ -164,8 +167,8 @@ static float    largeGridSize = 360.0;
     }
     
     UITapGestureRecognizer *tapOnIndicator = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resetWholeGrids:)];
-    uiv_indicator.userInteractionEnabled = YES;
-    [uiv_indicator addGestureRecognizer: tapOnIndicator];
+    uiv_indicatorContainer.userInteractionEnabled = YES;
+    [uiv_indicatorContainer addGestureRecognizer: tapOnIndicator];
 }
 
 #pragma mark - Initial Animation
@@ -206,19 +209,21 @@ static float    largeGridSize = 360.0;
 - (void)resetWholeGrids:(UIGestureRecognizer *)gesture {
     // Reset indicator's color and hide
     [self resetIndicatorColor];
-    uiv_indicator.hidden = YES;
-    
+
     // If detail text is on, close it first
     if (expanded) {
         [self tapArrowButtonClose:nil];
         [self performSelector:@selector(resetToGrids) withObject:nil afterDelay:0.5];
     } else {
         [self resetToGrids];
+        uiv_indicatorContainer.hidden = YES;
     }
 }
 
 - (void)resetToGrids {
     
+    uiv_indicatorContainer.hidden = YES;
+
     float gridTopGap = 2.0;
     float gridAndGap = 120;
     
@@ -284,6 +289,9 @@ static float    largeGridSize = 360.0;
               * Remove siwpe getsture from grids and add tap gesture to them
               * Move arrow button's position to original
               */
+             
+             uiv_indicatorContainer.hidden = YES;
+
              [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
              for (UIImageView *grid in arr_grids) {
                  for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
@@ -328,8 +336,6 @@ static float    largeGridSize = 360.0;
     
     uib_arrow.hidden = NO;
     
-    uiv_indicator.hidden = NO;
-    
     currentIndex = (int)[gesture.view tag];
     
     [self checkIndex:currentIndex];
@@ -368,6 +374,8 @@ static float    largeGridSize = 360.0;
              }
              
          } completion:^(BOOL finished){
+             
+             uiv_indicatorContainer.hidden = NO;
              
              [UIView animateWithDuration:0.5 animations:^(void){
                  
@@ -498,7 +506,7 @@ static float    largeGridSize = 360.0;
         uib_arrow.transform = rotation;
         uiv_textContent.alpha = 1.0;
         uiv_textContent.transform = CGAffineTransformMakeTranslation(-70, 0.0);
-        uiv_indicator.transform = CGAffineTransformMakeTranslation(moveDistance, 0.0);
+        uiv_indicatorContainer.transform = CGAffineTransformMakeTranslation(moveDistance, 0.0);
     } completion:^(BOOL finished){
         [uib_arrow removeTarget:self action:@selector(tapArrowButtonOpen:) forControlEvents:UIControlEventAllEvents];
         [uib_arrow addTarget:self action:@selector(tapArrowButtonClose:) forControlEvents:UIControlEventTouchUpInside];
@@ -514,7 +522,7 @@ static float    largeGridSize = 360.0;
         uib_arrow.transform = CGAffineTransformIdentity;
         uiv_textContent.alpha = 0.8;
         uiv_textContent.transform = CGAffineTransformIdentity;
-        uiv_indicator.transform = CGAffineTransformIdentity;
+        uiv_indicatorContainer.transform = CGAffineTransformIdentity;
     } completion:^(BOOL finished){
         uiv_gridContainer.backgroundColor = [UIColor clearColor];
         [uib_arrow removeTarget:self action:@selector(tapArrowButtonClose:) forControlEvents:UIControlEventAllEvents];
