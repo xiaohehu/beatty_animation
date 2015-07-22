@@ -14,26 +14,15 @@ static float    largeGridSize = 360.0;
 @interface animationView() {
     
     BOOL            expanded;
-    
     int             currentIndex;
-    
     UIView          *uiv_gridContainer;
-    UIImageView     *uiiv_grid0;
-    UIImageView     *uiiv_grid1;
-    UIImageView     *uiiv_grid2;
-    UIImageView     *uiiv_grid3;
-    UIImageView     *uiiv_grid4;
-    UIImageView     *uiiv_grid5;
-    UIImageView     *uiiv_grid6;
-    UIImageView     *uiiv_grid7;
-    UIImageView     *uiiv_grid8;
     UIView          *uiv_textContent;
     UIView          *uiv_indicator;
     UIButton        *uib_arrow;
-    NSArray         *arr_grids;
-    NSArray         *arr_indicator;
-    NSArray         *arr_smallImages;
-    NSArray         *arr_largeImages;
+    NSMutableArray  *arr_grids;
+    NSMutableArray  *arr_indicator;
+    NSMutableArray  *arr_smallImages;
+    NSMutableArray  *arr_largeImages;
     NSMutableArray  *arr_checkedIndex;
 }
 
@@ -76,49 +65,17 @@ static float    largeGridSize = 360.0;
 #pragma mark - Init all UI elements
 - (void)createGridArray {
     // Init all grid views
-    uiiv_grid0 = [UIImageView new];
-    uiiv_grid1 = [UIImageView new];
-    uiiv_grid2 = [UIImageView new];
-    uiiv_grid3 = [UIImageView new];
-    uiiv_grid4 = [UIImageView new];
-    uiiv_grid5 = [UIImageView new];
-    uiiv_grid6 = [UIImageView new];
-    uiiv_grid7 = [UIImageView new];
-    uiiv_grid8 = [UIImageView new];
+    arr_grids = [[NSMutableArray alloc] init];
+    arr_smallImages = [[NSMutableArray alloc] init];
+    arr_largeImages = [[NSMutableArray alloc] init];
     
-    // Add grid views to array
-    arr_grids = @[uiiv_grid0,
-                  uiiv_grid1,
-                  uiiv_grid2,
-                  uiiv_grid3,
-                  uiiv_grid4,
-                  uiiv_grid5,
-                  uiiv_grid6,
-                  uiiv_grid7,
-                  uiiv_grid8];
-    
-    arr_smallImages = @[@"fact-grid-01-sm.png",
-                        @"fact-grid-02-sm.png",
-                        @"fact-grid-03-sm.png",
-                        @"fact-grid-04-sm.png",
-                        @"fact-grid-05-sm.png",
-                        @"fact-grid-06-sm.png",
-                        @"fact-grid-07-sm.png",
-                        @"fact-grid-08-sm.png",
-                        @"fact-grid-09-sm.png"];
-    
-    arr_largeImages = @[@"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png",
-                        @"fact-grid-01-lg.png"];
-    
-    // Set tag to grid views
-    for (int i = 0; i < arr_grids.count; i++) {
+    for (int i = 0; i < 9; i++) {
+        UIImageView *uiiv = [UIImageView new];
+        [arr_grids addObject:uiiv];
+        [arr_smallImages addObject:[NSString stringWithFormat:@"fact-grid-0%i-sm.png",i+1]];
+        [arr_largeImages addObject:[NSString stringWithFormat:@"fact-grid-0%i-lg.png",i+1]];
+        
+        // Set tag to grid views
         [arr_grids[i] setTag: i];
         UIImageView *grid = arr_grids[i];
         [grid setImage:[UIImage imageNamed:arr_smallImages[i]]];
@@ -180,25 +137,11 @@ static float    largeGridSize = 360.0;
     
     UIColor *uic_normal = [UIColor colorWithRed:155.0/255.0 green:155.0/255.0 blue:155.0/255.0 alpha:1.0];
     
-    UIView *uiv_0 = [UIView new];
-    UIView *uiv_1 = [UIView new];
-    UIView *uiv_2 = [UIView new];
-    UIView *uiv_3 = [UIView new];
-    UIView *uiv_4 = [UIView new];
-    UIView *uiv_5 = [UIView new];
-    UIView *uiv_6 = [UIView new];
-    UIView *uiv_7 = [UIView new];
-    UIView *uiv_8 = [UIView new];
-
-    arr_indicator = @[uiv_0,
-                      uiv_1,
-                      uiv_2,
-                      uiv_3,
-                      uiv_4,
-                      uiv_5,
-                      uiv_6,
-                      uiv_7,
-                      uiv_8];
+    arr_indicator = [[NSMutableArray alloc] init];
+    for (int i = 0; i < 9; i++) {
+        UIView *uiv = [UIView new];
+        [arr_indicator addObject:uiv];
+    }
 
     for (int i = 0; i < arr_indicator.count; i++) {
         [arr_indicator[i] setTag:i];
@@ -292,6 +235,9 @@ static float    largeGridSize = 360.0;
             int y_position = (int)grid.tag/3;
             grid.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
             [grid setImage:[UIImage imageNamed:arr_smallImages[grid.tag]]];
+            
+            // set all z's to 0 so we can bring the selected one to the front
+            grid.layer.zPosition=0;
         }
     }
     /*
@@ -300,17 +246,22 @@ static float    largeGridSize = 360.0;
      * Move arrow button
      */
     UIImageView *currentView = arr_grids[currentIndex];
+    
+    // bring the selected view zindex to the front
+    currentView.layer.zPosition = 1;
+
     [UIView animateWithDuration:0.5 animations:^(void){
         int x_position = (int)currentView.tag%3;
         int y_position = (int)currentView.tag/3;
         currentView.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
         [currentView setImage:[UIImage imageNamed:arr_smallImages[currentIndex]]];
+        [self bringSubviewToFront:currentView];
         for (UIImageView *grid in arr_grids) {
             grid.alpha = 1.0;
             NSNumber *tagNum = [NSNumber numberWithInt:grid.tag];
             for (NSNumber *index in arr_checkedIndex) {
                 if (tagNum == index) {
-                    grid.alpha = 0.7;
+                    grid.alpha = 0.9;
                 }
             }
         }
@@ -379,6 +330,10 @@ static float    largeGridSize = 360.0;
     
     [UIView animateWithDuration:0.5 animations:^(void){
         [gesture view].frame = uiv_gridContainer.bounds;
+        
+        // bring the selected one to the front
+        [gesture view].layer.zPosition = 1;
+        
         uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
         
         for (UIImageView *grid in arr_grids) {
@@ -392,6 +347,9 @@ static float    largeGridSize = 360.0;
         }
         
     } completion:^(BOOL finished){
+        // now set it to the back again so the text view appears over the top
+        [gesture view].layer.zPosition = 0;
+        
         [self bringSubviewToFront:uib_arrow];
         [UIView animateWithDuration:0.3 animations:^(void){
             uib_arrow.frame = CGRectMake(expandButtonX + 20, expandButtonY, expandButtonSize, expandButtonSize);
@@ -476,7 +434,9 @@ static float    largeGridSize = 360.0;
      * According to direction move next grid to current one's left/right
      */
     UIImageView *nextView = arr_grids[nextIndex];
+    nextView.image = [UIImage imageNamed:arr_largeImages[nextIndex]];
     UIImageView *currView = arr_grids[currentIndex];
+    currView.image = [UIImage imageNamed:arr_largeImages[currentIndex]];
     nextView.frame = uiv_gridContainer.bounds;
     nextView.transform = CGAffineTransformMakeTranslation(largeGridSize * direction, 0.0);
     nextView.alpha = 1.0;
