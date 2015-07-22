@@ -249,47 +249,59 @@ static float    largeGridSize = 360.0;
     
     // bring the selected view zindex to the front
     currentView.layer.zPosition = 1;
-
-    [UIView animateWithDuration:0.5 animations:^(void){
-        int x_position = (int)currentView.tag%3;
-        int y_position = (int)currentView.tag/3;
-        currentView.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
-        [currentView setImage:[UIImage imageNamed:arr_smallImages[currentIndex]]];
-        [self bringSubviewToFront:currentView];
-        for (UIImageView *grid in arr_grids) {
-            grid.alpha = 1.0;
-            NSNumber *tagNum = [NSNumber numberWithInt:grid.tag];
-            for (NSNumber *index in arr_checkedIndex) {
-                if (tagNum == index) {
-                    grid.alpha = 0.9;
-                }
-            }
-        }
-        
-        uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
-        
-    } completion:^(BOOL finished){
-        /*
-         * Move arrow button layer under girds' contaier
-         * Remove siwpe getsture from grids and add tap gesture to them
-         * Move arrow button's position to original
-         */
-        [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
-        for (UIImageView *grid in arr_grids) {
-            for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
-                [grid removeGestureRecognizer: gesture];
-            }
-            UITapGestureRecognizer *tapOnGrid = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(expandGrid:)];
-            grid.userInteractionEnabled = YES;
-            [grid addGestureRecognizer: tapOnGrid];
-        }
-        [UIView animateWithDuration:0.33 animations:^(void){
-            uib_arrow.frame = CGRectMake(expandButtonX, expandButtonY, expandButtonSize, expandButtonSize);
-        } completion:^(BOOL finished){
-            uib_arrow.hidden = YES;
-        }];
-    }];
+    
+    UIImage * toImage = [UIImage imageNamed:arr_smallImages[currentIndex]];
+    [UIView transitionWithView:self
+                      duration:0.2f
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                        currentView.image = toImage;
+                    } completion:^(BOOL finished)
+     {
+         
+         [UIView animateWithDuration:0.5 animations:^(void){
+             int x_position = (int)currentView.tag%3;
+             int y_position = (int)currentView.tag/3;
+             currentView.frame = CGRectMake(x_position * gridAndGap, y_position * gridAndGap+gridTopGap, smallGridSize, smallGridSize);
+             
+             //[currentView setImage:[UIImage imageNamed:arr_smallImages[currentIndex]]];
+             
+             for (UIImageView *grid in arr_grids) {
+                 grid.alpha = 1.0;
+                 NSNumber *tagNum = [NSNumber numberWithInt:grid.tag];
+                 for (NSNumber *index in arr_checkedIndex) {
+                     if (tagNum == index) {
+                         grid.alpha = 0.9;
+                     }
+                 }
+             }
+             
+             uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
+             
+         } completion:^(BOOL finished){
+             /*
+              * Move arrow button layer under girds' contaier
+              * Remove siwpe getsture from grids and add tap gesture to them
+              * Move arrow button's position to original
+              */
+             [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
+             for (UIImageView *grid in arr_grids) {
+                 for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
+                     [grid removeGestureRecognizer: gesture];
+                 }
+                 UITapGestureRecognizer *tapOnGrid = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(expandGrid:)];
+                 grid.userInteractionEnabled = YES;
+                 [grid addGestureRecognizer: tapOnGrid];
+             }
+             [UIView animateWithDuration:0.33 animations:^(void){
+                 uib_arrow.frame = CGRectMake(expandButtonX, expandButtonY, expandButtonSize, expandButtonSize);
+             } completion:^(BOOL finished){
+                 uib_arrow.hidden = YES;
+             }];
+         }];
+     }];
 }
+
 /*
  * Reset indicators color to gray
  */
@@ -328,52 +340,71 @@ static float    largeGridSize = 360.0;
     float expandButtonX = 342;
     float expandButtonY = 364;
     
-    [UIView animateWithDuration:0.5 animations:^(void){
-        [gesture view].frame = uiv_gridContainer.bounds;
-        
-        // bring the selected one to the front
-        [gesture view].layer.zPosition = 1;
-        
-        uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
-        
-        for (UIImageView *grid in arr_grids) {
-            if ([grid isEqual: gesture.view]) {
-                [grid setImage:[UIImage imageNamed:arr_largeImages[currentIndex]]];
-                grid.alpha = 1.0;
-                continue;
-            } else {
-                grid.alpha = 0.0;
-            }
-        }
-        
-    } completion:^(BOOL finished){
-        // now set it to the back again so the text view appears over the top
-        [gesture view].layer.zPosition = 0;
-        
-        [self bringSubviewToFront:uib_arrow];
-        [UIView animateWithDuration:0.3 animations:^(void){
-            uib_arrow.frame = CGRectMake(expandButtonX + 20, expandButtonY, expandButtonSize, expandButtonSize);
-        }];
-        /*
-         * Updated gesture of grid (From tap to swipe)
-         */
-        for (UIImageView *grid in arr_grids) {
-            
-            [grid setImage:[UIImage imageNamed:arr_largeImages[currentIndex]]];
-            
-            for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
-                [grid removeGestureRecognizer: gesture];
-            }
-            
-            UISwipeGestureRecognizer *swipeLeftOnGrib = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeftGrib:)];
-            swipeLeftOnGrib.direction = UISwipeGestureRecognizerDirectionLeft;
-            [grid addGestureRecognizer: swipeLeftOnGrib];
-            
-            UISwipeGestureRecognizer *swipeRightOnGrib = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRightGrib:)];
-            swipeRightOnGrib.direction = UISwipeGestureRecognizerDirectionRight;
-            [grid addGestureRecognizer: swipeRightOnGrib];
-        }
-    }];
+    UIImageView*selected = arr_grids[currentIndex];
+    
+    UIImage * toImage = [UIImage imageNamed:arr_largeImages[currentIndex]];
+    [UIView transitionWithView:self
+                      duration:0.2f
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                        [selected setImage:toImage];
+
+                    } completion:^(BOOL finished)
+     {
+         
+         [UIView animateWithDuration:0.5 animations:^(void){
+             [gesture view].frame = uiv_gridContainer.bounds;
+             
+             // bring the selected one to the front
+             [gesture view].layer.zPosition = 1;
+             
+             for (UIImageView *grid in arr_grids) {
+                 if ([grid isEqual: gesture.view]) {
+                     grid.alpha = 1.0;
+                     continue;
+                 } else {
+                     grid.alpha = 0.0;
+                 }
+             }
+             
+         } completion:^(BOOL finished){
+             
+             [UIView animateWithDuration:0.5 animations:^(void){
+                 
+                 uib_arrow.frame = CGRectMake(expandButtonX + 60, expandButtonY, expandButtonSize, expandButtonSize);
+                 
+             } completion:^(BOOL finished){
+                 // now set it to the back again so the text view appears over the top
+                 [gesture view].layer.zPosition = 0;
+                 [self bringSubviewToFront:uib_arrow];
+                 
+                 [UIView animateWithDuration:0.3 animations:^(void){
+                     uib_arrow.frame = CGRectMake(expandButtonX + 20, expandButtonY, expandButtonSize, expandButtonSize);
+                 }];
+                 /*
+                  * Updated gesture of grid (From tap to swipe)
+                  */
+                 for (UIImageView *grid in arr_grids) {
+                     
+                     [grid setImage:[UIImage imageNamed:arr_largeImages[currentIndex]]];
+                     
+                     for (UIGestureRecognizer *gesture in grid.gestureRecognizers) {
+                         [grid removeGestureRecognizer: gesture];
+                     }
+                     
+                     UISwipeGestureRecognizer *swipeLeftOnGrib = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeLeftGrib:)];
+                     swipeLeftOnGrib.direction = UISwipeGestureRecognizerDirectionLeft;
+                     [grid addGestureRecognizer: swipeLeftOnGrib];
+                     
+                     UISwipeGestureRecognizer *swipeRightOnGrib = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRightGrib:)];
+                     swipeRightOnGrib.direction = UISwipeGestureRecognizerDirectionRight;
+                     [grid addGestureRecognizer: swipeRightOnGrib];
+                 }
+             }];
+             
+         }];
+     
+     }];
 }
 
 #pragma mark Swipe on big grid to load next/previous one
