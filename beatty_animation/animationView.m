@@ -290,6 +290,8 @@ static float    largeGridSize = 360.0;
               * Move arrow button's position to original
               */
              
+             currentView.layer.zPosition = 0;
+             
              uiv_indicatorContainer.hidden = YES;
 
              [self insertSubview:uib_arrow belowSubview:uiv_gridContainer];
